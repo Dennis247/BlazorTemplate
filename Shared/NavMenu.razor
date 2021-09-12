@@ -1,0 +1,233 @@
+﻿@*<div class="top-row pl-4 navbar navbar-dark">
+        <a class="navbar-brand" href="">BlazorTemplate</a>
+        <button class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+
+    <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+        <ul class="nav flex-column">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Home
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="counter">
+                    <span class="oi oi-plus" aria-hidden="true"></span> Counter
+                </NavLink>
+            </li>
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="fetchdata">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
+                </NavLink>
+            </li>
+        </ul>
+    </div>
+
+    @code {
+        private bool collapseNavMenu = true;
+
+        private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+        private void ToggleNavMenu()
+        {
+            collapseNavMenu = !collapseNavMenu;
+        }
+    }
+*@
+
+
+
+<div id="sidebar-scrollbar">
+    <nav class="iq-sidebar-menu">
+        <ul id="iq-sidebar-toggle" class="iq-menu">
+            <li class="iq-menu-title"><i class="ri-separator"></i><span>Main</span></li>
+            <li class="@homeSelected "><a href="/" @onclick='() => setSelectedNav("/")' class="iq-waves-effect"><i class="las la-home"></i><span>Home</span></a></li>
+            <li class="@counterSelected"><a href="counter" @onclick='() => setSelectedNav("counter")' class="iq-waves-effect"><i class="las la-plus"></i><span>Counter</span></a></li>
+            <li class="@fetchDataSelected"><a href="fetchdata" @onclick='() => setSelectedNav("fetchdata")' class="iq-waves-effect"><i class="las la-cloud"></i><span>Forecast</span></a></li>
+
+
+            @*      <li class="active">
+            <a href="#dashboard" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="true"><i class="las la-home"></i><span>Dashboard</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="dashboard" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li class="active"><a href="index.html">Dashboard 1</a></li>
+                <li><a href="dashboard1.html">Dashboard 2</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#mailbox" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="las la-envelope-open"></i><span>Email</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="mailbox" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li><a href="app/index.html">Inbox</a></li>
+                <li><a href="app/email-compose.html">Email Compose</a></li>
+            </ul>
+        </li>
+        <li><a href="todo.html" class="iq-waves-effect"><i class="las la-check-square"></i><span>Todo</span></a></li>
+        <li>
+            <a href="#user-info" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="las la-user-tie"></i><span>User</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="user-info" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li><a href="profile.html">User Profile</a></li>
+                <li><a href="profile-edit.html">User Edit</a></li>
+                <li><a href="add-user.html">User Add</a></li>
+                <li><a href="user-list.html">User List</a></li>
+            </ul>
+        </li>
+        <li><a href="calendar.html" class="iq-waves-effect"><i class="las la-calendar"></i><span>Calendar</span></a></li>
+        <li><a href="chat.html" class="iq-waves-effect"><i class="las la-sms"></i><span>Chat</span></a></li>
+        <li>
+            <a href="#ecommerce" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="ri-shopping-cart-line"></i><span>E-commerce</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="ecommerce" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li><a href="e-commerce-product-list.html">Product Listing</a></li>
+                <li><a href="e-commerce-product-detail.html">Product Details</a></li>
+                <li><a href="e-commerce-checkout.html">Checkout</a></li>
+            </ul>
+        </li>
+        <li class="iq-menu-title"><i class="ri-separator"></i><span>Components</span></li>
+        <li>
+            <a href="#ui-elements" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="lab la-elementor"></i><span>UI Elements</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="ui-elements" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li><a href="ui-colors.html">colors</a></li>
+                <li><a href="ui-typography.html">Typography</a></li>
+                <li><a href="ui-alerts.html">Alerts</a></li>
+                <li><a href="ui-badges.html">Badges</a></li>
+                <li><a href="ui-breadcrumb.html">Breadcrumb</a></li>
+                <li><a href="ui-buttons.html">Buttons</a></li>
+                <li><a href="ui-cards.html">Cards</a></li>
+                <li><a href="ui-carousel.html">Carousel</a></li>
+                <li><a href="ui-embed-video.html">Video</a></li>
+                <li><a href="ui-grid.html">Grid</a></li>
+                <li><a href="ui-images.html">Images</a></li>
+                <li><a href="ui-list-group.html">list Group</a></li>
+                <li><a href="ui-media-object.html">Media</a></li>
+                <li><a href="ui-modal.html">Modal</a></li>
+                <li><a href="ui-notifications.html">Notifications</a></li>
+                <li><a href="ui-pagination.html">Pagination</a></li>
+                <li><a href="ui-popovers.html">Popovers</a></li>
+                <li><a href="ui-progressbars.html">Progressbars</a></li>
+                <li><a href="ui-tabs.html">Tabs</a></li>
+                <li><a href="ui-tooltips.html">Tooltips</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#forms" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="las la-file-alt"></i><span>Forms</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="forms" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li><a href="form-layout.html">Form Elements</a></li>
+                <li><a href="form-validation.html">Form Validation</a></li>
+                <li><a href="form-switch.html">Form Switch</a></li>
+                <li><a href="form-chechbox.html">Form Checkbox</a></li>
+                <li><a href="form-radio.html">Form Radio</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#forms-wizard" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="las la-database"></i><span>Forms Wizard</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="forms-wizard" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li><a href="form-wizard.html">Simple Wizard</a></li>
+                <li><a href="form-wizard-validate.html">Validate Wizard</a></li>
+                <li><a href="form-wizard-vertical.html">Vertical Wizard</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#tables" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="las la-table"></i><span>Table</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="tables" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li><a href="tables-basic.html">Basic Tables</a></li>
+                <li><a href="data-table.html">Data Table</a></li>
+                <li><a href="table-editable.html">Editable Table</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#charts" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="las la-chart-bar"></i><span>Charts</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="charts" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li><a href="chart-morris.html">Morris Chart</a></li>
+                <li><a href="chart-high.html">High Charts</a></li>
+                <li><a href="chart-am.html">Am Charts</a></li>
+                <li><a href="chart-apex.html">Apex Chart</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#icons" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="las la-icons"></i><span>Icons</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="icons" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li><a href="icon-dripicons.html">Dripicons</a></li>
+                <li><a href="icon-fontawesome-5.html">Font Awesome 5</a></li>
+                <li><a href="icon-lineawesome.html">line Awesome</a></li>
+                <li><a href="icon-remixicon.html">Remixicon</a></li>
+                <li><a href="icon-unicons.html">unicons</a></li>
+            </ul>
+        </li>
+        <li class="iq-menu-title"><i class="ri-separator"></i><span>Pages</span></li>
+        <li>
+            <a href="#authentication" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="las la-file-contract"></i><span>Authentication</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="authentication" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li><a href="sign-in.html">Login</a></li>
+                <li><a href="sign-up.html">Register</a></li>
+                <li><a href="pages-recoverpw.html">Recover Password</a></li>
+                <li><a href="pages-confirm-mail.html">Confirm Mail</a></li>
+                <li><a href="pages-lock-screen.html">Lock Screen</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#map" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="las la-map-marker"></i><span>Maps</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="map" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li><a href="pages-map.html">Google Map</a></li>
+                <li><a href="#">Vector Map</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#extra-pages" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="lab la-codepen"></i><span>Extra Pages</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="extra-pages" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li><a href="pages-timeline.html">Timeline</a></li>
+                <li><a href="pages-invoice.html">Invoice</a></li>
+                <li><a href="blank-page.html">Blank Page</a></li>
+                <li><a href="pages-error.html">Error 404</a></li>
+                <li><a href="pages-error-500.html">Error 500</a></li>
+                <li><a href="pages-pricing.html">Pricing</a></li>
+                <li><a href="pages-pricing-one.html">Pricing 1</a></li>
+                <li><a href="pages-maintenance.html">Maintenance</a></li>
+                <li><a href="pages-comingsoon.html">Coming Soon</a></li>
+                <li><a href="pages-faq.html">Faq</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#menu-level" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="ri-record-circle-line"></i><span>Menu Level</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="menu-level" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li><a href="#"><i class="ri-record-circle-line"></i>Menu 1</a></li>
+                <li><a href="#"><i class="ri-record-circle-line"></i>Menu 2</a>
+                <li>
+                    <a href="#sub-menu" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="ri-play-circle-line"></i><span>Sub-menu</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+                    <ul id="sub-menu" class="iq-submenu iq-submenu-data collapse">
+                        <li><a href="#"><i class="ri-record-circle-line"></i>Sub-menu 1</a></li>
+                        <li><a href="#"><i class="ri-record-circle-line"></i>Sub-menu 2</a></li>
+                        <li><a href="#"><i class="ri-record-circle-line"></i>Sub-menu 3</a></li>
+                    </ul>
+                </li>
+        </li>
+        <li><a href="#"><i class="ri-record-circle-line"></i>Menu 3</a></li>
+        <li><a href="#"><i class="ri-record-circle-line"></i>Menu 4</a></li>*@
+            @*  </ul>*@
+            @* </li>*@
+        </ul>
+    </nav>
+    <div class="p-3"></div>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string homeSelected = "";
+    private string fetchDataSelected = "";
+    private string counterSelected = "";
+
+    private void setSelectedNav(string value)
+    {
+        homeSelected = "/" == value ? "active" : "";
+        counterSelected = "counter" == value ? "active" : "";
+        fetchDataSelected = "fetchdata" == value ? "active" : "";
+
+    }
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
