@@ -19,12 +19,14 @@ namespace BlazorTemplate.api.TokenHelpers
         private readonly IConfiguration _configuration;
         private readonly IConfigurationSection _jwtSettings;
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public TokenService(IConfiguration configuration, UserManager<User> userManager)
+        public TokenService(IConfiguration configuration, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             _configuration = configuration;
             _jwtSettings = _configuration.GetSection("JwtSettings");
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public SigningCredentials GetSigningCredentials()
@@ -38,17 +40,33 @@ namespace BlazorTemplate.api.TokenHelpers
         public async Task<List<Claim>> GetClaims(User user)
         {
             var claims = new List<Claim>
-        {
+            {
             new Claim(ClaimTypes.Name, user.Email)
-        };
+            };
+            var userRoleClaims = new List<Claim>();
 
             var roles = await _userManager.GetRolesAsync(user);
+
+            //Add role permissions as claims
+            foreach (var item in roles)
+            {
+                var role = await _roleManager.FindByNameAsync(item);
+                if(role != null)
+                {
+                    var allRoleClaims = await _roleManager.GetClaimsAsync(role);
+                    userRoleClaims.AddRange(allRoleClaims);
+                }
+            }
+   
+
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            return claims;
+            var allClaims = claims.Union(userRoleClaims);
+
+            return allClaims.ToList();
         }
 
         public JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
