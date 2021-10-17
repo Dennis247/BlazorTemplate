@@ -1,8 +1,9 @@
 using Blazored.LocalStorage;
+using BlazorTemplate.Authorization.Policies;
 using BlazorTemplate.AuthProviders;
-using BlazorTemplate.HttpRepository;
-using BlazorTemplate.HttpRepository.Auth;
-using BlazorTemplate.HttpRepository.Users;
+using BlazorTemplate.Repository;
+using BlazorTemplate.Repository.Auth;
+using BlazorTemplate.Repository.Users;
 using BlazorTemplate.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -36,7 +37,12 @@ namespace BlazorTemplate
             builder.Services.AddHttpClientInterceptor();
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddBlazoredLocalStorage();
-            builder.Services.AddAuthorizationCore();
+            builder.Services.AddAuthorizationCore(config =>
+            {
+                config.AddPolicy(Policies.IsUser, Policies.IsUsersPolicy());
+      
+            });
+       //     builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
             builder.Services.AddScoped<RefreshTokenService>();
             builder.Services.AddScoped<HttpInterceptorService>();

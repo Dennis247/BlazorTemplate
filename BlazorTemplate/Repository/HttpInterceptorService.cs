@@ -1,4 +1,4 @@
-﻿using BlazorTemplate.HttpRepository;
+﻿using BlazorTemplate.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Toolbelt.Blazor;
 
-namespace BlazorTemplate.HttpRepository
+namespace BlazorTemplate.Repository
 {
     public class HttpInterceptorService
     {

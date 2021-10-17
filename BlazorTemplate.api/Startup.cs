@@ -1,8 +1,15 @@
 using BlazorTemplate.api.Context;
+using BlazorTemplate.api.Helpers.Filters;
+using BlazorTemplate.api.Helpers.Resolvers;
+using BlazorTemplate.api.Midddelwares;
+using BlazorTemplate.api.Midddelwares.Authorization.Permission;
+using BlazorTemplate.api.Repository;
+using BlazorTemplate.api.Repository.Autdit;
 using BlazorTemplate.api.TokenHelpers;
 using BlazorTemplate.api.TokenHelpers.IdentityByExamples.CustomTokenProviders;
 using EmailService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,12 +24,15 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace BlazorTemplate.api
 {
@@ -49,11 +59,45 @@ namespace BlazorTemplate.api
 
             services.AddDbContext<BlazorDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("sqlConnection")));
 
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddControllers();
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(swagger =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BlazorTemplate.api", Version = "v1" });
+                //This is to generate the Default UI of Swagger Documentation  
+                swagger.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "BlazorKit Api",
+                    Description = "Documentation For BlazorKit Api"
+                });
+                // To Enable authorization using Swagger (JWT)  
+                swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+                });
+                swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                          new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                }
+                            },
+                            new string[] {}
+
+                    }
+                });
             });
+
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddIdentity<User, IdentityRole>(
@@ -116,6 +160,29 @@ namespace BlazorTemplate.api
             var emailConfig = Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
             services.AddSingleton(emailConfig);
             services.AddScoped<IEmailSender, EmailSender>();
+            services.AddTransient<UserResolverService>();
+            services.AddScoped<IAuditRepo, AuditRepo>();
+
+            services.AddAuthorization();
+
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+            services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+
+            // services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+            //services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+            //   services.AddSingleton<ILoggerManager, LoggerManager>();
+
+            services.AddHttpContextAccessor();
+
+            services.AddMvc(config => {
+              //  config.Filters.Add(typeof(AuditTrailFilter));
+            })
+        .AddNewtonsoftJson(options => {
+            options.SerializerSettings.DateFormatString = "yyyy-MM-ddTHH:mm:ssZ";
+            options.SerializerSettings.Formatting = Formatting.Indented;
+            options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+        });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -140,6 +207,12 @@ namespace BlazorTemplate.api
             });
 
             app.UseRouting();
+
+          
+
+          //  app.ConfigureExceptionHandler(logger);
+
+            app.ConfigureCustomExceptionMiddleware();
 
             app.UseAuthentication();
             app.UseAuthorization();

@@ -16,6 +16,17 @@ namespace BlazorTemplate.api.Helpers.PermissionHelpers
         public static List<string> ClaimsList = new List<string>{Add, Edit, Delete, View};
     }
 
+    public static class UsersClaims
+    {
+        public const string Add = "users.add";
+        public const string Edit = "users.edit";
+        public const string Delete = "users.delete";
+        public const string View = "users.view";
+
+
+        public static List<string> ClaimsList = new List<string> { Add, Edit, Delete, View };
+    }
+
     public static class ClaimsList
     {
         public static  List<string> AllClaimsList

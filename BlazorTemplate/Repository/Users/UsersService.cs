@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace BlazorTemplate.HttpRepository.Users
+namespace BlazorTemplate.Repository.Users
 {
     public class UsersService : IUsersService
     {
@@ -22,10 +22,19 @@ namespace BlazorTemplate.HttpRepository.Users
 
         public async Task<ApiResponse<List<UserDto>>> GetUsers()
         {
-            var usersResult = await _client.GetAsync("users/GetUsers");
-            var registrationContent = await usersResult.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<ApiResponse<List<UserDto>>>(registrationContent, _options);
-            return result;
+            try
+            {
+                var usersResult = await _client.GetAsync("users/GetUsers");
+                var registrationContent = await usersResult.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<ApiResponse<List<UserDto>>>(registrationContent, _options);
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                throw ;
+            }
+     
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BlazorTemplate.HttpRepository.Users
+namespace BlazorTemplate.Repository.Users
 {
    public interface IUsersService
     {

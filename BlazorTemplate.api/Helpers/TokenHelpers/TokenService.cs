@@ -41,9 +41,13 @@ namespace BlazorTemplate.api.TokenHelpers
         {
             var claims = new List<Claim>
             {
-            new Claim(ClaimTypes.Name, user.Email)
+              new Claim(ClaimTypes.Email, user.Email),
+              new Claim(ClaimTypes.Name, user.Id)
             };
             var userRoleClaims = new List<Claim>();
+
+            var userClaims = await _userManager.GetClaimsAsync(user);
+           
 
             var roles = await _userManager.GetRolesAsync(user);
 
@@ -64,7 +68,7 @@ namespace BlazorTemplate.api.TokenHelpers
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var allClaims = claims.Union(userRoleClaims);
+            var allClaims = claims.Union(userRoleClaims).Union(userClaims);
 
             return allClaims.ToList();
         }

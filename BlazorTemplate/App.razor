@@ -1,23 +1,40 @@
-<Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-    </Found>
-    <NotFound>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <div class="wrapper">
-                <div class="container-fluid p-0">
-                    <div class="row no-gutters">
-                        <div class="col-sm-12 text-center">
-                            <div class="iq-error">
-                                <img src="template/images/error/01.png" class="img-fluid iq-error-img" alt="">
-                                <h3 class="mb-0 mt-4">Oops! This Page is Not Found.</h3>
-                                <p>The requested page dose not exist.</p>
-                                <a class="btn btn-primary mt-3" href="/"><i class="ri-home-4-line"></i>Back to Home</a>
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
+        @*    <Found Context="routeData">
+                <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            </Found>*@
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <Authorizing>
+                    <div id="app">
+                        <div id="loading">
+
+                        </div>
+                    </div>
+                </Authorizing>
+                <NotAuthorized>
+                    <BlazorTemplate.Pages.Accounts.Login />
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <div class="wrapper">
+                    <div class="container-fluid p-0">
+                        <div class="row no-gutters">
+                            <div class="col-sm-12 text-center">
+                                <div class="iq-error">
+                                    <img src="template/images/error/01.png" class="img-fluid iq-error-img" alt="">
+                                    <h3 class="mb-0 mt-4">Oops! This Page is Not Found.</h3>
+                                    <p>The requested page dose not exist.</p>
+                                    <a class="btn btn-primary mt-3" href="/"><i class="ri-home-4-line"></i>Back to Home</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </LayoutView>
-    </NotFound>
-</Router>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

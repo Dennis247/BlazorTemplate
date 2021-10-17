@@ -12,7 +12,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 
-namespace BlazorTemplate.HttpRepository.Auth
+namespace BlazorTemplate.Repository.Auth
 {
     public class AuthenticationService : IAuthenticationService
     {
@@ -43,22 +43,23 @@ namespace BlazorTemplate.HttpRepository.Auth
 
         public async Task<ApiResponse<AuthResponseDto>> Login(UserForAuthenticationDto userForAuthentication)
         {
-            var content = JsonSerializer.Serialize(userForAuthentication);
-            var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+          
+                var content = JsonSerializer.Serialize(userForAuthentication);
+                var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            var authResult = await _client.PostAsync("accounts/login", bodyContent);
-            var authContent = await authResult.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<ApiResponse<AuthResponseDto>>(authContent, _options);
-            if (result.IsSucessFull)
-            {
-                await _localStorage.SetItemAsync("authToken", result.Payload.Token);
-                await _localStorage.SetItemAsync("refreshToken", result.Payload.RefreshToken);
-            }
+                var authResult = await _client.PostAsync("accounts/login", bodyContent);
+                var authContent = await authResult.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<ApiResponse<AuthResponseDto>>(authContent, _options);
+                if (result.IsSucessFull)
+                {
+                    await _localStorage.SetItemAsync("authToken", result.Payload.Token);
+                    await _localStorage.SetItemAsync("refreshToken", result.Payload.RefreshToken);
+                    ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(result.Payload.Token);
+                    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Payload.Token);
+                }
+                return result;
 
-            ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(userForAuthentication.Email);
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Payload.Token);
-
-            return result;
+     
         }
 
         public async Task Logout()

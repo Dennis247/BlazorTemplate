@@ -30,4 +30,12 @@ namespace Entities.DTO.PermissionDto
         public List<string> Claims { get; set; }
     }
 
+
+    public class GetAllUserPermissionDto
+    {
+        [Required]
+        public string UserId { get; set; }
+    }
+
+
 }

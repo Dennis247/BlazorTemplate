@@ -1,4 +1,4 @@
-﻿using BlazorTemplate.HttpRepository.Users;
+﻿using BlazorTemplate.Repository.Users;
 using Entities.DTO.UserDto;
 using Microsoft.AspNetCore.Components;
 using System;

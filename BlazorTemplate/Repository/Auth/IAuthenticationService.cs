@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BlazorTemplate.HttpRepository.Auth
+namespace BlazorTemplate.Repository.Auth
 {
     public interface IAuthenticationService
     {

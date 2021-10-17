@@ -1,4 +1,4 @@
-﻿using BlazorTemplate.HttpRepository.Auth;
+﻿using BlazorTemplate.Repository.Auth;
 using BlazorTemplate.Services;
 using Entities.DTO;
 using Microsoft.AspNetCore.Components;

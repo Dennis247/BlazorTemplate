@@ -1,4 +1,4 @@
-﻿using BlazorTemplate.HttpRepository.Auth;
+﻿using BlazorTemplate.Repository.Auth;
 using BlazorTemplate.Services;
 using Entities.DTO;
 using Microsoft.AspNetCore.Components;
@@ -36,6 +36,7 @@ namespace BlazorTemplate.Pages.Accounts
             {
                 //Todo
                 ErrorMessage = result.Message;
+           
 
                 //check for diffrent login state
             }

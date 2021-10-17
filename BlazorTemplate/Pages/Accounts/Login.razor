@@ -1,11 +1,12 @@
-﻿@page "/login"
+﻿@page "/"
+@page "/login"
 @layout PageLayout
 
 
 
 <div class="sign-in-from bg-white">
     <h1 class="mb-0">Login</h1>
-    <p>Enter your email address and password to access admin panel.</p>
+    <p>Enter your email address and password for access.</p>
     <EditForm Model="_userForAuthenticationDto" OnValidSubmit="LoginUser" class="mt-4 needs-validation">
         <DataAnnotationsValidator />
         <ValidationSummary />
@@ -30,7 +31,7 @@
             <ValidationMessage For="@(() => _userForAuthenticationDto.Password)" />
         </div>
 
- 
+
 
 
         <div class="d-inline-block w-100">

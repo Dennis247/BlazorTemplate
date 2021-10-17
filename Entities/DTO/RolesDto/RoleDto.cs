@@ -30,4 +30,32 @@ namespace Entities.DTO.RolesDto
         [Required]
         public string Name { get; set; }
     }
+
+    public class AddUserToRoleDto
+    {
+        [Required]
+        public string UserId { get; set; }
+        [Required]
+        public List<string> Roles { get; set; }
+    }
+
+    public class GetUserRoleResultDto
+    {
+        [Required]
+        public string UserId { get; set; }
+        [Required]
+        public List<IdentityRoleDto> Roles { get; set; }
+    }
+
+    public class IdentityRoleDto
+    {
+        public string RoleId { get; set; }
+        public string RoleName { get; set; }
+    }
+
+    public class GetAllUserRolesDto
+    {
+        [Required]
+        public string UserId { get; set; }
+    }
 }

@@ -2,6 +2,7 @@
 using BlazorTemplate.api.Helpers.PermissionHelpers;
 using Entities.DTO;
 using Entities.DTO.PermissionDto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,8 @@ using System.Threading.Tasks;
 
 namespace BlazorTemplate.api.Controllers
 {
+    //   [Authorize("roles.add")]
+    [AllowAnonymous]
     public class PermissionsManagementController : ControllerBase
     {
         private readonly ILogger<PermissionsManagementController> _logger;
@@ -251,6 +254,40 @@ namespace BlazorTemplate.api.Controllers
         }
 
 
+
+        [HttpPost("GetAllUserPermissions")]
+        public async Task<IActionResult> GetAllUserPermissions(GetAllUserPermissionDto getAllUserPermissionDto)
+        {
+            if (!ModelState.IsValid)
+                return Ok(new ApiResponse<IEnumerable<string>>
+                {
+                    IsSucessFull = false,
+                    Message = "Model state is not valid",
+                    Payload = ModelState.Values.SelectMany(e => e.Errors.Select(er => er.ErrorMessage))
+                });
+
+
+
+            var existingUser = await _userManager.FindByIdAsync(getAllUserPermissionDto.UserId);
+            if (existingUser == null)
+            {
+                return Ok(new ApiResponse<IEnumerable<string>>
+                {
+                    IsSucessFull = false,
+                    Message = "User Not Found",
+                    Payload = null
+                });
+            }
+
+            var userPermissions = await _userManager.GetClaimsAsync(existingUser);
+            return Ok(new ApiResponse<IEnumerable<Claim>>
+            {
+                IsSucessFull = true,
+                Message = "Claims  Removed From User Sucessfully",
+                Payload = userPermissions
+            });
+
+        }
 
     }
 }
