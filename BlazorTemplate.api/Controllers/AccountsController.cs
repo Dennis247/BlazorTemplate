@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using BlazorTemplate.api.Helpers.Filters;
 using BlazorTemplate.api.Helpers.Utils;
 using Microsoft.AspNetCore.Authorization;
+using System.Net;
 
 namespace BlazorTemplate.api.Controllers
 {
@@ -54,12 +55,12 @@ namespace BlazorTemplate.api.Controllers
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)
         {
             if (userForRegistration == null || !ModelState.IsValid)
-                return Ok(new ApiResponse<string>
+                return BadRequest(new ApiResponse<string>
                 {
                     IsSucessFull = false,
                     Message = "Model state is not valid",
-                  //  Payload = ModelState.Values.SelectMany(e => e.Errors.Select(er => er.ErrorMessage))
-                     Payload = string.Join(Environment.NewLine, ModelState.Values.SelectMany(e => e.Errors.Select(er => er.ErrorMessage)))
+                    httpStatusCode = (int)HttpStatusCode.BadRequest,
+                    Payload = string.Join(Environment.NewLine, ModelState.Values.SelectMany(e => e.Errors.Select(er => er.ErrorMessage)))
                 });
 
             var user = new User { UserName = userForRegistration.Email, Email = userForRegistration.Email };
@@ -67,14 +68,12 @@ namespace BlazorTemplate.api.Controllers
             var result = await _userManager.CreateAsync(user, userForRegistration.Password);
             if (!result.Succeeded)
             {
-              
-
-                return Ok(new ApiResponse<string>
+                return BadRequest(new ApiResponse<string>
                 {
                     IsSucessFull = false,
-                    Message = "Model state is not valid",
-                    Payload = string.Join("\n", result.Errors.Select(e => e.Description))
-              });
+                    Message = string.Join(Environment.NewLine, result.Errors.SelectMany(e => e.Description)),
+                    httpStatusCode = (int)HttpStatusCode.InternalServerError
+                });
             }
 
             await _userManager.AddToRoleAsync(user, "Viewer");
@@ -84,7 +83,14 @@ namespace BlazorTemplate.api.Controllers
             //  var message = new Message(new string[] { user.Email }, "Confirmation Token", $"SUse ${token} to confirm registration ", null);
             //  await _emailSender.SendEmailAsync(message);
 
-            return Ok(new ApiResponse<string> { IsSucessFull = true, Message = $"Use {token} to confirm email", Payload = token });
+            return Ok(
+                new ApiResponse<string>
+                {
+                    IsSucessFull = true,
+                    Message = $"Use {token} to confirm email",
+                    Payload = token,
+                    httpStatusCode = (int)HttpStatusCode.OK
+                });
 
         }
 
@@ -93,14 +99,26 @@ namespace BlazorTemplate.api.Controllers
         {
             var user = await _userManager.FindByEmailAsync(otp.Email);
             if (user == null)
-                return Ok(new ApiResponse<string> { IsSucessFull = false, Message = "User does not exist" });
+                return NotFound(
+                    new ApiResponse<string>
+                    {
+                        IsSucessFull = false,
+                        Message = "User does not exist",
+                        httpStatusCode = (int)HttpStatusCode.NotFound
+                    });
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
             //  var message = new Message(new string[] { user.Email }, "Confirmation Token", $"SUse ${token} to confirm registration ", null);
             //  await _emailSender.SendEmailAsync(message);
 
-            return Ok(new ApiResponse<string> { IsSucessFull = true, Message = "Otp Sent Sucessful", Payload = token });
+            return Ok(new ApiResponse<string>
+            {
+                IsSucessFull = true,
+                Message = "Otp Sent Sucessful",
+                Payload = token,
+                httpStatusCode = (int)HttpStatusCode.OK
+            });
         }
 
         [HttpPost("Send2FACode")]
@@ -108,14 +126,26 @@ namespace BlazorTemplate.api.Controllers
         {
             var user = await _userManager.FindByEmailAsync(twoFADto.Email);
             if (user == null)
-                return Ok(new ApiResponse<string> { IsSucessFull = false, Message = "User does not exist" });
+                return NotFound(new ApiResponse<string>
+                {
+                    IsSucessFull = false,
+                    Message = "User does not exist",
+                    httpStatusCode = (int)HttpStatusCode.NotFound
+                });
 
-            var token =  await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
 
             //  var message = new Message(new string[] { user.Email }, "Confirmation Token", $"SUse ${token} to confirm registration ", null);
             //  await _emailSender.SendEmailAsync(message);
             _logger.LogInformation($"{twoFADto.Email} --  2FA Code sent sucessfull");
-            return Ok(new ApiResponse<string> { IsSucessFull = true, Message = "2FA Code Sent Sucessful", Payload = token });
+            return Ok(
+                new ApiResponse<string>
+                {
+                    IsSucessFull = true,
+                    Message = "2FA Code Sent Sucessful",
+                    Payload = token,
+                    httpStatusCode = (int)HttpStatusCode.OK
+                });
         }
 
 
@@ -124,12 +154,24 @@ namespace BlazorTemplate.api.Controllers
         {
             var user = await _userManager.FindByEmailAsync(verify2FADto.Email);
             if (user == null)
-                return Ok(new ApiResponse<string> { IsSucessFull = false, Message = "User does not exist" });
+                return NotFound(
+                    new ApiResponse<string>
+                    {
+                        IsSucessFull = false,
+                        Message = "User does not exist",
+                        httpStatusCode = (int)HttpStatusCode.NotFound
+                    });
 
-            var result = await _userManager.VerifyTwoFactorTokenAsync(user, "Email",verify2FADto.token);
+            var result = await _userManager.VerifyTwoFactorTokenAsync(user, "Email", verify2FADto.token);
             if (result)
             {
-                return Ok(new ApiResponse<string> { IsSucessFull = true, Message = "2FA Verification Sucessful", Payload = "" });
+                return Ok(
+                    new ApiResponse<string>
+                    {
+                        IsSucessFull = true,
+                        Message = "2FA Verification Sucessful",
+                        Payload = ""
+                    });
             }
             return Ok(new ApiResponse<string> { IsSucessFull = false, Message = "2FA Verification Failed", Payload = "" });
 
@@ -145,7 +187,7 @@ namespace BlazorTemplate.api.Controllers
             if (user == null)
                 return Ok(new ApiResponse<string> { IsSucessFull = false, Message = "User does not exist" });
 
-             var result = await _userManager.ConfirmEmailAsync(user, confirmEmailDto.Token);
+            var result = await _userManager.ConfirmEmailAsync(user, confirmEmailDto.Token);
             if (result.Succeeded)
             {
                 return Ok(new ApiResponse<string> { IsSucessFull = true, Message = "Email Confirmation Sucessful", Payload = "" });
@@ -154,7 +196,7 @@ namespace BlazorTemplate.api.Controllers
             return Ok(new ApiResponse<string> { IsSucessFull = false, Message = "Email Confirmation Failed", Payload = "" });
         }
 
-       // [AuditTrailFilter]
+        // [AuditTrailFilter]
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto userForAuthentication)
         {
@@ -170,11 +212,22 @@ namespace BlazorTemplate.api.Controllers
             var user = await _userManager.FindByNameAsync(userForAuthentication.Email);
 
             if (user == null || !await _userManager.CheckPasswordAsync(user, userForAuthentication.Password))
-                return NotFound(new ApiResponse<AuthResponseDto> { IsSucessFull = false, Message = "User does not exist" });
+                return NotFound(
+                    new ApiResponse<AuthResponseDto>
+                    {
+                        IsSucessFull = false,
+                        Message = "User does not exist"
+                    });
 
 
             if (!user.IsActive)
-                return Unauthorized(new ApiResponse<AuthResponseDto> { IsSucessFull = false, Message = "User Profile is Not Active" });
+                return Unauthorized(
+                    new ApiResponse<AuthResponseDto>
+                    {
+                        IsSucessFull = false,
+                        Message = "User Profile is Not Active",
+                        httpStatusCode = (int)HttpStatusCode.Unauthorized
+                    });
 
 
 
@@ -189,6 +242,7 @@ namespace BlazorTemplate.api.Controllers
                        IsSucessFull = false,
                        Message = "2FA Authnetication is required",
                        Payload = null,
+                       httpStatusCode = (int)HttpStatusCode.Unauthorized
                    });
             }
 
@@ -199,11 +253,12 @@ namespace BlazorTemplate.api.Controllers
                     {
                         IsSucessFull = false,
                         Message = "You Account is Locked Out, Please reset your password",
-                        Payload = null
+                        Payload = null,
+                        httpStatusCode = (int)HttpStatusCode.Unauthorized
                     });
             }
 
-           var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
+            var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
             if (!isEmailConfirmed)
             {
                 return Unauthorized(
@@ -228,7 +283,7 @@ namespace BlazorTemplate.api.Controllers
 
             _logger.LogInformation($"{userForAuthentication.Email} -- logged in sucessfull");
 
-            var audit =new Audit();
+            var audit = new Audit();
             audit.HttpMethod = _contextAccessor.HttpContext.Request.Method;
             audit.TraceId = _contextAccessor.HttpContext.TraceIdentifier;
             audit.BrowserInfo = _contextAccessor.HttpContext.Request.Headers["User-Agent"].ToString();
@@ -247,7 +302,8 @@ namespace BlazorTemplate.api.Controllers
                   {
                       IsSucessFull = true,
                       Message = "Login Sucessful",
-                      Payload = new AuthResponseDto { Token = token, RefreshToken = user.RefreshToken }
+                      Payload = new AuthResponseDto { Token = token, RefreshToken = user.RefreshToken },
+                      httpStatusCode = (int)HttpStatusCode.OK
                   });
         }
 
@@ -265,7 +321,13 @@ namespace BlazorTemplate.api.Controllers
 
             var user = await _userManager.FindByEmailAsync(forgotPasswordDto.Email);
             if (user == null)
-                return NotFound(new ApiResponse<bool> { IsSucessFull = false, Message = "User with email does not exist" });
+                return NotFound(
+                    new ApiResponse<bool>
+                    {
+                        IsSucessFull = false,
+                        Message = "User with email does not exist",
+                        httpStatusCode = (int)HttpStatusCode.NotFound
+                    });
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             // var callback = Url.Action(nameof(ResetPassword), "Account", new { token, email = user.Email }, Request.Scheme);
@@ -273,7 +335,14 @@ namespace BlazorTemplate.api.Controllers
             var message = new Message(new string[] { user.Email }, "Reset password token", $"Use this token {token} to reset your password", null);
             //   await _emailSender.SendEmailAsync(message);
 
-            return Ok(new ApiResponse<string> { IsSucessFull = true, Message = "Password Reset Token Sent Sucessfully To Email", Payload = token });
+            return Ok(
+                new ApiResponse<string>
+                {
+                    IsSucessFull = true,
+                    Message = "Password Reset Token Sent Sucessfully To Email",
+                    Payload = token,
+                    httpStatusCode = (int)HttpStatusCode.OK
+                });
         }
 
 
@@ -290,21 +359,26 @@ namespace BlazorTemplate.api.Controllers
 
             var user = await _userManager.FindByEmailAsync(resetPasswordModel.Email);
             if (user == null)
-                return NotFound(new ApiResponse<string> { IsSucessFull = false, Message = "User does not exist" });
+                return NotFound(
+                    new ApiResponse<string>
+                    {
+                        IsSucessFull = false,
+                        Message = "User does not exist",
+                        httpStatusCode = (int)HttpStatusCode.NotFound
+                    });
 
             var resetPassResult = await _userManager.ResetPasswordAsync(user, resetPasswordModel.Token, resetPasswordModel.Password);
             if (!resetPassResult.Succeeded)
             {
-              
-                return  Ok(new ApiResponse<IEnumerable<string>>
-                {
-                    IsSucessFull = false,
-                    Message = "Password Reset Failed",
-                    Payload = ModelState.Values.SelectMany(e => e.Errors.Select(er => er.ErrorMessage))
-                });
+                throw new Exception(string.Join(Environment.NewLine, ModelState.Values.SelectMany(e => e.Errors.Select(er => er.ErrorMessage))));
             }
 
-            return Ok(new ApiResponse<string> { IsSucessFull = true, Message = "Password Reset Sucessful" });
+            return Ok(
+                new ApiResponse<string>
+                {
+                    IsSucessFull = true,
+                    Message = "Password Reset Sucessful"
+                });
         }
     }
 }
