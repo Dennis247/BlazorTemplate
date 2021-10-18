@@ -55,7 +55,7 @@ namespace BlazorTemplate.api.Controllers
         public async Task<IActionResult> AddRole(AddRoleDto addRoleDto)
         {
             if (!ModelState.IsValid)
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return BadRequest(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "Model state is not valid",
@@ -65,10 +65,10 @@ namespace BlazorTemplate.api.Controllers
             var result = await _roleManager.CreateAsync(new IdentityRole(addRoleDto.Name.Trim()));
             if (result.Succeeded)
             {
-                return RedirectToAction("List");
                 return Ok(new ApiResponse<string> { IsSucessFull = true, Message = "Role Creation Sucessful", Payload = null });
             }
-            return Ok(new ApiResponse<IEnumerable<String>> { IsSucessFull = false, Message = "Role Creation Failed", Payload = result.Errors.Select(e=>e.Description) });
+
+            return BadRequest(new ApiResponse<IEnumerable<String>> { IsSucessFull = false, Message = "Role Creation Failed", Payload = result.Errors.Select(e=>e.Description) });
         }
 
 
@@ -76,7 +76,7 @@ namespace BlazorTemplate.api.Controllers
         public async Task<IActionResult> AddUserToRole(AddUserToRoleDto addUserToRoleDto)
         {
             if (!ModelState.IsValid)
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return BadRequest(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "Model state is not valid",
@@ -86,7 +86,7 @@ namespace BlazorTemplate.api.Controllers
             var existingUser = await _userManager.FindByIdAsync(addUserToRoleDto.UserId);
             if (existingUser == null)
             {
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return NotFound(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "User Not Found",
@@ -100,7 +100,13 @@ namespace BlazorTemplate.api.Controllers
             {
                 return Ok(new ApiResponse<string> { IsSucessFull = true, Message = "User added to Roles Sucessful", Payload = null });
             }
-            return Ok(new ApiResponse<IEnumerable<String>> { IsSucessFull = false, Message = "User Added to Roles Failed", Payload = result.Errors.Select(e => e.Description) });
+            return BadRequest(
+                new ApiResponse<IEnumerable<String>>
+                {
+                    IsSucessFull = false, 
+                    Message = "User Added to Roles Failed",
+                    Payload = result.Errors.Select(e => e.Description)
+                });
         }
 
 
@@ -108,7 +114,7 @@ namespace BlazorTemplate.api.Controllers
         public async Task<IActionResult> EditRole(EditRoleDto editRoleDto)
         {
             if (!ModelState.IsValid)
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return BadRequest(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "Model state is not valid",
@@ -119,7 +125,7 @@ namespace BlazorTemplate.api.Controllers
             var existingRole  = await _roleManager.FindByIdAsync(editRoleDto.RoleId);
             if(existingRole == null)
             {
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return NotFound(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "Role Not Found",
@@ -134,14 +140,19 @@ namespace BlazorTemplate.api.Controllers
             {
                 return Ok(new ApiResponse<string> { IsSucessFull = true, Message = "Role Update Sucessful", Payload = null });
             }
-            return Ok(new ApiResponse<IEnumerable<String>> { IsSucessFull = true, Message = "Role Update Failed", Payload = result.Errors.Select(e => e.Description) });
+
+            return BadRequest(new ApiResponse<IEnumerable<String>> { 
+                IsSucessFull = true,
+                Message = "Role Update Failed",
+                Payload = result.Errors.Select(e => e.Description) 
+            });
         }
 
         [HttpPost("DeleteRole")]
         public async Task<IActionResult> DeleteRole(DeleteRoleDto deleteRoleDto)
         {
             if (!ModelState.IsValid)
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return BadRequest(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "Model state is not valid",
@@ -152,7 +163,7 @@ namespace BlazorTemplate.api.Controllers
             var existingRole = await _roleManager.FindByIdAsync(deleteRoleDto.RoleId);
             if (existingRole == null)
             {
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return NotFound(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "Role Not Found",
@@ -165,16 +176,21 @@ namespace BlazorTemplate.api.Controllers
 
             if (result.Succeeded)
             {
-                return Ok(new ApiResponse<string> { IsSucessFull = true, Message = "Delete Sucessful", Payload = null });
+                return Ok(
+                    new ApiResponse<string> { 
+                        IsSucessFull = true,
+                        Message = "Delete Sucessful",
+                        Payload = null 
+                    });
             }
-            return Ok(new ApiResponse<IEnumerable<String>> { IsSucessFull = true, Message = "Delete Failed", Payload = result.Errors.Select(e => e.Description) });
+            return BadRequest(new ApiResponse<IEnumerable<String>> { IsSucessFull = true, Message = "Delete Failed", Payload = result.Errors.Select(e => e.Description) });
         }
 
         [HttpPost("GetAllUserRoles")]
         public async Task<IActionResult> GetAllUserRoles(GetAllUserRolesDto getAllUserRolesDto)
         {
             if (!ModelState.IsValid)
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return BadRequest(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "Model state is not valid",
@@ -186,7 +202,7 @@ namespace BlazorTemplate.api.Controllers
             var existingUser = await _userManager.FindByIdAsync(getAllUserRolesDto.UserId);
             if (existingUser == null)
             {
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return NotFound(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "User Not Found",

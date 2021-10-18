@@ -10,6 +10,6 @@ namespace Entities.DTO
         public T Payload { get; set; }
         public bool IsSucessFull { get; set; }
         public string Message { get; set; }
-        public int httpStatusCode { get; set; }
+      //  public int httpStatusCode { get; set; }
     }
 }

@@ -59,7 +59,7 @@ namespace BlazorTemplate.api.Controllers
         public IActionResult GetUsersById([FromBody]GetUserByIdDto getUserByIdDto)
         {
             if (!ModelState.IsValid)
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return BadRequest(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "Model state is not valid",

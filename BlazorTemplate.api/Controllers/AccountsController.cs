@@ -59,7 +59,6 @@ namespace BlazorTemplate.api.Controllers
                 {
                     IsSucessFull = false,
                     Message = "Model state is not valid",
-                    httpStatusCode = (int)HttpStatusCode.BadRequest,
                     Payload = string.Join(Environment.NewLine, ModelState.Values.SelectMany(e => e.Errors.Select(er => er.ErrorMessage)))
                 });
 
@@ -72,7 +71,6 @@ namespace BlazorTemplate.api.Controllers
                 {
                     IsSucessFull = false,
                     Message = string.Join(Environment.NewLine, result.Errors.SelectMany(e => e.Description)),
-                    httpStatusCode = (int)HttpStatusCode.InternalServerError
                 });
             }
 
@@ -89,7 +87,6 @@ namespace BlazorTemplate.api.Controllers
                     IsSucessFull = true,
                     Message = $"Use {token} to confirm email",
                     Payload = token,
-                    httpStatusCode = (int)HttpStatusCode.OK
                 });
 
         }
@@ -104,7 +101,6 @@ namespace BlazorTemplate.api.Controllers
                     {
                         IsSucessFull = false,
                         Message = "User does not exist",
-                        httpStatusCode = (int)HttpStatusCode.NotFound
                     });
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -117,7 +113,6 @@ namespace BlazorTemplate.api.Controllers
                 IsSucessFull = true,
                 Message = "Otp Sent Sucessful",
                 Payload = token,
-                httpStatusCode = (int)HttpStatusCode.OK
             });
         }
 
@@ -130,7 +125,6 @@ namespace BlazorTemplate.api.Controllers
                 {
                     IsSucessFull = false,
                     Message = "User does not exist",
-                    httpStatusCode = (int)HttpStatusCode.NotFound
                 });
 
             var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
@@ -144,7 +138,6 @@ namespace BlazorTemplate.api.Controllers
                     IsSucessFull = true,
                     Message = "2FA Code Sent Sucessful",
                     Payload = token,
-                    httpStatusCode = (int)HttpStatusCode.OK
                 });
         }
 
@@ -159,7 +152,6 @@ namespace BlazorTemplate.api.Controllers
                     {
                         IsSucessFull = false,
                         Message = "User does not exist",
-                        httpStatusCode = (int)HttpStatusCode.NotFound
                     });
 
             var result = await _userManager.VerifyTwoFactorTokenAsync(user, "Email", verify2FADto.token);
@@ -226,7 +218,6 @@ namespace BlazorTemplate.api.Controllers
                     {
                         IsSucessFull = false,
                         Message = "User Profile is Not Active",
-                        httpStatusCode = (int)HttpStatusCode.Unauthorized
                     });
 
 
@@ -242,7 +233,6 @@ namespace BlazorTemplate.api.Controllers
                        IsSucessFull = false,
                        Message = "2FA Authnetication is required",
                        Payload = null,
-                       httpStatusCode = (int)HttpStatusCode.Unauthorized
                    });
             }
 
@@ -254,7 +244,6 @@ namespace BlazorTemplate.api.Controllers
                         IsSucessFull = false,
                         Message = "You Account is Locked Out, Please reset your password",
                         Payload = null,
-                        httpStatusCode = (int)HttpStatusCode.Unauthorized
                     });
             }
 
@@ -303,7 +292,6 @@ namespace BlazorTemplate.api.Controllers
                       IsSucessFull = true,
                       Message = "Login Sucessful",
                       Payload = new AuthResponseDto { Token = token, RefreshToken = user.RefreshToken },
-                      httpStatusCode = (int)HttpStatusCode.OK
                   });
         }
 
@@ -326,7 +314,6 @@ namespace BlazorTemplate.api.Controllers
                     {
                         IsSucessFull = false,
                         Message = "User with email does not exist",
-                        httpStatusCode = (int)HttpStatusCode.NotFound
                     });
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -341,7 +328,7 @@ namespace BlazorTemplate.api.Controllers
                     IsSucessFull = true,
                     Message = "Password Reset Token Sent Sucessfully To Email",
                     Payload = token,
-                    httpStatusCode = (int)HttpStatusCode.OK
+
                 });
         }
 
@@ -364,7 +351,7 @@ namespace BlazorTemplate.api.Controllers
                     {
                         IsSucessFull = false,
                         Message = "User does not exist",
-                        httpStatusCode = (int)HttpStatusCode.NotFound
+
                     });
 
             var resetPassResult = await _userManager.ResetPasswordAsync(user, resetPasswordModel.Token, resetPasswordModel.Password);
@@ -377,7 +364,8 @@ namespace BlazorTemplate.api.Controllers
                 new ApiResponse<string>
                 {
                     IsSucessFull = true,
-                    Message = "Password Reset Sucessful"
+                    Message = "Password Reset Sucessful",
+
                 });
         }
     }

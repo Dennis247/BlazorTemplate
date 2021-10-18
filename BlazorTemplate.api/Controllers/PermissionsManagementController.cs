@@ -49,7 +49,7 @@ namespace BlazorTemplate.api.Controllers
         public async Task<IActionResult> AddClaimsToRole(RoleClaminsDto addClaimsToRoleDto)
         {
             if (!ModelState.IsValid)
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return BadRequest(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "Model state is not valid",
@@ -59,7 +59,7 @@ namespace BlazorTemplate.api.Controllers
             var existingRole = await _roleManager.FindByIdAsync(addClaimsToRoleDto.RoleId);
             if (existingRole == null)
             {
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return NotFound(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "Role Not Found",
@@ -90,7 +90,7 @@ namespace BlazorTemplate.api.Controllers
         public async Task<IActionResult> RemoveClaimsFromRole(RoleClaminsDto removeClaimsFromRole)
         {
             if (!ModelState.IsValid)
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return BadRequest(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "Model state is not valid",
@@ -100,7 +100,7 @@ namespace BlazorTemplate.api.Controllers
             var existingRole = await _roleManager.FindByIdAsync(removeClaimsFromRole.RoleId);
             if (existingRole == null)
             {
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return NotFound(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "Role Not Found",
@@ -137,7 +137,7 @@ namespace BlazorTemplate.api.Controllers
             var existingRole = await _roleManager.FindByIdAsync(getRoleClaimsDto.RoleId);
             if (existingRole == null)
             {
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return NotFound(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "Role Not Found",
@@ -174,7 +174,7 @@ namespace BlazorTemplate.api.Controllers
             var existingUser = await _userManager.FindByIdAsync(assignUserPermissionDto.UserId);
             if (existingUser == null)
             {
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return NotFound(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "User Not Found",
@@ -223,7 +223,7 @@ namespace BlazorTemplate.api.Controllers
             var existingUser = await _userManager.FindByIdAsync(assignUserPermissionDto.UserId);
             if (existingUser == null)
             {
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return NotFound(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "User Not Found",
@@ -259,7 +259,7 @@ namespace BlazorTemplate.api.Controllers
         public async Task<IActionResult> GetAllUserPermissions(GetAllUserPermissionDto getAllUserPermissionDto)
         {
             if (!ModelState.IsValid)
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return BadRequest(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "Model state is not valid",
@@ -271,7 +271,7 @@ namespace BlazorTemplate.api.Controllers
             var existingUser = await _userManager.FindByIdAsync(getAllUserPermissionDto.UserId);
             if (existingUser == null)
             {
-                return Ok(new ApiResponse<IEnumerable<string>>
+                return NotFound(new ApiResponse<IEnumerable<string>>
                 {
                     IsSucessFull = false,
                     Message = "User Not Found",
