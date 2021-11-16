@@ -1,0 +1,58 @@
+﻿<div id="sidebar-scrollbar">
+    <nav class="iq-sidebar-menu">
+        <ul id="iq-sidebar-toggle" class="iq-menu">
+            <li class="iq-menu-title"><i class="ri-separator"></i><span>Main</span></li>
+            <li class="@homeSelected "><a href="dashboard" @onclick='() => setSelectedNav("dashboard")' class="iq-waves-effect"><i class="las la-home"></i><span>Dashboard</span></a></li>
+            <li class="@usersSelected "><a href="users" @onclick='() => setSelectedNav("users")' class="iq-waves-effect"><i class="las la-user-tie"></i><span>Users</span></a></li>
+            <li class="@usersSelected "><a href="tempausersdashboard" @onclick='() => setSelectedNav("tempausersdashboard")' class="iq-waves-effect"><i class="las la-user-friends"></i><span>Tempa Users</span></a></li>
+            <li class="@usersSelected "><a href="tempagroupsdashboard" @onclick='() => setSelectedNav("tempagroupsdashboard")' class="iq-waves-effect"><i class="las la-users"></i><span>Tempa Groups</span></a></li>
+            <li class="@usersSelected "><a href="temparevenuedashboard" @onclick='() => setSelectedNav("temparevenuedashboard")' class="iq-waves-effect"><i class="las la-money-bill"></i><span>Tempa Revenue</span></a></li>
+
+            
+
+
+
+
+            @*    <li class="@auditsSelected"><a href="audits" @onclick='() => setSelectedNav("auditsSelected")' class="iq-waves-effect"><i class="las la-eye-dropper"></i><span>Audits</span></a></li>
+            *@
+            @*    <li class="@usersSelected">
+            <a href="#user-info" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false"><i class="las la-user-tie"></i><span>User</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+            <ul id="user-info" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle">
+                <li><a href="userdetails">User Profile</a></li>
+                <li><a href="edituser">User Edit</a></li>
+                <li><a href="adduser">User Add</a></li>
+                <li class="@usersSelected"><a @onclick='() => setSelectedNav("users")' href="users">User List</a></li>
+            </ul>
+        </li>*@
+        </ul>
+    </nav>
+    <div class="p-3"></div>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string homeSelected = "";
+    private string fetchDataSelected = "";
+    private string counterSelected = "";
+    private string usersSelected = "";
+    private string auditsSelected = "";
+    private string dashboardSelected = "";
+
+    private void setSelectedNav(string value)
+    {
+        homeSelected = "dashboard" == value ? "active" : "";
+        counterSelected = "counter" == value ? "active" : "";
+        fetchDataSelected = "fetchdata" == value ? "active" : "";
+        usersSelected = "users" == value ? "active" : "";
+        dashboardSelected = "dashboard" == value ? "active" : "";
+
+    }
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

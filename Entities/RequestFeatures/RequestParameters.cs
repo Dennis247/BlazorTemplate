@@ -1,4 +1,4 @@
-﻿namespace BlazorTemplate.Entities.RequestFeatures
+﻿namespace TempaWeb.Entities.RequestFeatures
 {
     public class RequestParameters
     {

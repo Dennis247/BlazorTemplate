@@ -1,13 +1,11 @@
 ﻿
-using TempaWeb.Entities.RequestFeatures;
 using Entities.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TempaWeb.Entities.Paging
+namespace TempaWeb.api.Paging
 {
-
     public class PagedList<T> : List<T>
     {
         public MetaData MetaData { get; set; }
@@ -35,5 +33,4 @@ namespace TempaWeb.Entities.Paging
             return new PagedList<T>(items, count, pageNumber, pageSize);
         }
     }
-
 }
